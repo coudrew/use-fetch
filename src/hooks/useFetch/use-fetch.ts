@@ -41,9 +41,6 @@ export function useFetch<T>({ url, options = {} }: UseFetchParams) {
       })
       .then((result) => {
         if (!abortController.signal.aborted) {
-          if (!(result satisfies T)) {
-            throw new Error("Unexpected response type");
-          }
           setData(result);
         }
       })
@@ -64,13 +61,13 @@ export function useFetch<T>({ url, options = {} }: UseFetchParams) {
       hasInitialized.current = true;
       fetchData();
     }
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
   }, []);
 
-  return { data, error, isLoading, refetch };
+  return {
+    data,
+    error,
+    isLoading,
+    refetch,
+    abortController: abortControllerRef.current,
+  };
 }

@@ -1,35 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
+import { useFetch } from "./hooks/useFetch/use-fetch";
+import { PokeCard } from "./components/PokeCard";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { data, isLoading, error } = useFetch<{
+    results: { name: string; url: string }[];
+  }>({
+    url: `${apiUrl}/pokemon?limit=${9}&&offset=${0}`,
+  });
 
+  if (isLoading) return <p>loading..</p>;
+  if (error) return <p>something went wrong</p>;
+  if (!data) return <p>no pokemon found</p>;
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      {data.results.map(({ name }) => (
+        <PokeCard key={name} name={name} />
+      ))}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

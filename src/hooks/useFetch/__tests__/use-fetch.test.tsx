@@ -50,18 +50,6 @@ describe("useFetch", () => {
     });
   });
 
-  it("returns an error object when return has wrong shape", async () => {
-    fetchMocker.mockOnce(JSON.stringify("fail"));
-
-    const { result } = renderHook(() =>
-      useFetch<{ key: string }>({ url: TEST_URL }),
-    );
-
-    waitFor(() => {
-      expect(result.current.error).toEqual("Unexpected response type");
-    });
-  });
-
   it("returns an error object when a network error occurs", async () => {
     fetchMocker.mockReject(new Error("Network error"));
 
